@@ -7,5 +7,10 @@ def on_click(x, y, button, pressed):
 
 listener = mouse.Listener(on_click=on_click)
 listener.start()
-listener.join()
-pyautogui.sleep(10)  # Run the script for 1 hour (you can change the duration as needed)
+
+try:
+    while True:
+        pyautogui.sleep(1)
+except KeyboardInterrupt:
+    listener.stop()
+    listener.join()

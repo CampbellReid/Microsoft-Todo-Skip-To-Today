@@ -5,6 +5,7 @@ import datetime
 import cv2
 import numpy as np
 import argparse
+import signal
 
 def find_template_location(screenshot, template):
     # Convert the screenshot and template images to grayscale
@@ -74,10 +75,23 @@ click_x = args.click_x
 click_y = args.click_y
 
 window = tk.Tk()
+
+# https://stackoverflow.com/a/66788780
+def signal_handler(signal, frame):
+    window.destroy()
+    
+def check():
+    window.after(500, check)  #  time in ms.
+
+signal.signal(signal.SIGINT, signal_handler)
 window.geometry("800x600")  # Set the window size to 800x600 pixels
 
-button = tk.Button(window, text="Take Screenshot", command=button_clicked)
+button = tk.Button(window, text="Checkoff item", command=button_clicked)
 button.pack()
 
-window.mainloop()
+# this let's the terminal ^C get sampled every so often
+window.after(500, check)  #  time in ms.
 
+window.bind_all('<Control-c>', signal_handler)
+ 
+window.mainloop()
